@@ -2,7 +2,7 @@ const net = require('net');
 const server = net.createServer();
 
 server.on('connection', clientToProxySocket => {
-    console.log('Client Connected To Proxy');
+    console.log('============ Client Connected To Proxy ============');
 
     // We need only the data once, the starting packet
     clientToProxySocket.once('data', data => {
@@ -34,10 +34,10 @@ server.on('connection', clientToProxySocket => {
                 port: serverPort
             },
             () => {
-                console.log('PROXY TO SERVER SET UP');
+                console.log('============ PROXY TO SERVER SET UP ==============');
                 if (isTLSConnection) {
                     //Send Back OK to HTTPS CONNECT Request
-                    clientToProxySocket.write('HTTP/1.1 200 OK\r\n\n');
+                    clientToProxySocket.write('HTTP/2 200 OK\r\n\n');
                 } else {
                     proxyToServerSocket.write(data);
                 }
@@ -67,6 +67,43 @@ server.on('close', () => {
     console.log('Client Disconnected');
 });
 
-server.listen(8124, () => {
-    console.log('Server runnig at http://localhost:' + 8124);
+server.listen(9000, () => {
+    console.log('Server runnig at http://localhost:' + 9000);
 });
+
+// =========================================================
+
+/*
+const net = require('net');
+const server = net.createServer(c => {
+    // 'connection' listener
+    console.log('client connected');
+    c.on('end', () => {
+        console.log('client disconnected');
+    });
+    c.on('error', err => {
+        console.log(err.stack);
+    });
+    c.write('hello\r\n');
+    c.pipe(c);
+});
+server.on('error', err => {
+    throw err;
+});
+server.listen(8124, () => {
+    console.log('server bound');
+});
+
+const client = net.createConnection({ port: 8124 }, () => {
+    // 'connect' listener
+    console.log('connected to server!');
+    client.write('world!\r\n');
+});
+client.on('data', data => {
+    console.log(data.toString());
+    client.end();
+});
+client.on('end', () => {
+    console.log('disconnected from server');
+});
+*/
