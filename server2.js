@@ -1,10 +1,14 @@
 const net = require('net');
 const server = net.createServer(socket => {
     // 'connection' listener
-    const client = net.createConnection({ port: 80, host: 'theplantlist.org' }, () => {
+    const client = net.createConnection({ port: 80, host: 'www.google.com' }, () => {
         // 'connect' listener
         console.log('connected to server!');
-        // client.write(`GET http://theplantlist.org \r\n\r\n`);
+        client.write(`GET https://www.google.com HTTP/1.1\r\n\r\n`);
+    });
+
+    client.on('error', function() {
+        console.log('error on client request');
     });
 
     // client.on('data', data => {
@@ -22,11 +26,16 @@ const server = net.createServer(socket => {
         // console.log('client disconnected');
     // });
 
+    socket.on('error', function() {
+        console.log('error on server socket');
+    });
+
     client.pipe(socket);
     socket.pipe(client);
 });
 
 server.on('error', err => {
+    console.log('error on server');
     throw err;
 });
 
