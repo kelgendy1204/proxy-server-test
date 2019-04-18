@@ -23,7 +23,7 @@ const net = require('net');
 const client = net.createConnection({ port: 80, host: 'theplantlist.org' }, () => {
     // 'connect' listener
     console.log('connected to server!');
-    client.write(`GET http://theplantlist.org\r\n\r\n`);
+    client.write(`GET http://theplantlist.org \r\n\r\n`);
 });
 
 client.on('data', data => {
